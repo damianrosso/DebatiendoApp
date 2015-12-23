@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="starter">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <title></title>
+
+    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+     <link href="https://sandbox-tutorial.firebaseapp.com/resources/css/example.css" rel="stylesheet">
+
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
+    <script src="cordova.js"></script>
+    <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
+    <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
+    <script src="js/app.js"></script>
+  </head>
+  <body ng-controller="MyController">
+     
+<ion-pane>
+      <!-- Header --> 
+      <ion-header-bar class="bar bar-header bar-positive">
+        <button class="button icon ion-home"></button>
+        <h2 class="title">FUN CHAT</h2>
+      </ion-header-bar>
+
+  <ion-content>
+    
+
+        <div class="item item-dark">
+          <input ng-model="name" type="text" id="nameInput" placeholder="ingresa tu nombre.">
+        </div>
+        
+        <div class="item item-divider">Historial de Mensajes:</div>
+
+<div class="item item-dark">
+        <div class="list" ng-repeat="msg in messages">
+            <a class="item item-avatar item-thumbnail-left item-text-wrap" href="#">
+              <img src="img/ionic.png">
+              <h2>{{ msg.from }}</h2>
+              <p>{{ msg.body }}</p>
+            </a>
+        </div>
+</div>
+
+</ion-content>
+       <!--<div class="bar bar-footer bar-balanced">
+            <label class="item item-input">
+              <input ng-model="msg" ng-keydown="addMessage($event)" type="text" id="messageInput"  placeholder="Escribe tu mensaje...">
+            </label>
+      </div>-->
+
+<div class="bar bar-footer">
+  <div class="title"> <label class="item item-input">
+              <input ng-model="msg" ng-keydown="addMessage($event)" type="text" id="messageInput"  placeholder="Escribe tu mensaje...">
+            </label></div>
+  <button class="button button-clear ion-android-send"></button>
+</div>      
+   </ion-pane> 
+  </body>
+</html>
