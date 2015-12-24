@@ -17,45 +17,52 @@
   </head>
   <body ng-controller="MyController">
      
-<ion-pane>
+<ion-pane style="background-image: url(img/DebatiendoBackGround.jpg)">
+    
       <!-- Header --> 
       <ion-header-bar class="bar bar-header bar-positive">
         <button class="button icon ion-home"></button>
-        <h2 class="title">FUN CHAT</h2>
+        <h2 class="title">DEBATIENDO APP</h2>
       </ion-header-bar>
-
-  <ion-content>
+      <div class="bar bar-subheader has-header" style="display: flex !important;">
+       <label class="item item-input">
+       <i class="icon ion-person-stalker"></i>
+        <input type="text" style="padding-left: 5px;padding-top: 5px;" placeholder="Escribe tu apodo...">
+  </label>
+      </div>
+  <!--<ion-content >-->
+  <div class="scroll-content ionic-scroll overflow-scroll has-subheader">
     
 
-        <div class="item item-dark">
+        <!--<div class="item item-dark">
           <input ng-model="name" type="text" id="nameInput" placeholder="ingresa tu nombre.">
-        </div>
-        
+        </div>-->
+
         <div class="item item-divider">Historial de Mensajes:</div>
 
-<div class="item item-dark">
-        <div class="list" ng-repeat="msg in messages">
-            <a class="item item-avatar item-thumbnail-left item-text-wrap" href="#">
-              <img src="img/ionic.png">
-              <h2>{{ msg.from }}</h2>
-              <p>{{ msg.body }}</p>
-            </a>
+        <div class="item" style="background-color: inherit;padding-bottom:50px;">
+                <div class="" ng-repeat="msg in messages">
+                    <a class="item item-avatar" style="background-color: inherit; border-style: none;" href="#">
+                      <img src="img/avatar.png">
+                      <h2 style="color: #ffc900;">{{ msg.from }}</h2>
+                      <p><span style="color: black;font-family: &apos;Arial Black&apos;, &apos;Arial Bold&apos;, Gadget, sans-serif;font-size: 14px;font-style: normal;font-variant: normal;font-weight: 500;line-height: 15.4px;">{{ msg.body }}</span></p>
+                    </a>
+                </div>
         </div>
+
+  <!--</ion-content>-->
 </div>
+       
+        <div class="bar bar-footer">
+                    <div class="title"> 
+                        <label class="item item-input">
+                            <input ng-model="msg" ng-keydown="addMessage($event)" type="text" id="messageInput" placeholder="Escribe tu mensaje...">
+                            <button class="button button-clear ion-android-send button-right" ng-click="addMessageByClick();"></button>
+                        </label>
+                  </div>
+                  
+        </div>      
 
-</ion-content>
-       <!--<div class="bar bar-footer bar-balanced">
-            <label class="item item-input">
-              <input ng-model="msg" ng-keydown="addMessage($event)" type="text" id="messageInput"  placeholder="Escribe tu mensaje...">
-            </label>
-      </div>-->
-
-<div class="bar bar-footer">
-  <div class="title"> <label class="item item-input">
-              <input ng-model="msg" ng-keydown="addMessage($event)" type="text" id="messageInput"  placeholder="Escribe tu mensaje...">
-            </label></div>
-  <button class="button button-clear ion-android-send"></button>
-</div>      
    </ion-pane> 
   </body>
 </html>

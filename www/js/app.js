@@ -24,32 +24,47 @@ angular.module('starter', ['ionic','firebase'])
 })
 
 //Controller de acceso a FIREBASE
-.controller("MyController", ["$scope", "$firebaseArray",
-        function($scope, $firebaseArray) {
+.controller("MyController", ["$scope", "$firebaseArray","$http",
+        function($scope, $firebaseArray,$http) {
           //CREATE A FIREBASE REFERENCE
           var ref = new Firebase("https://shining-heat-9140.firebaseio.com/");
             //https://p761udnm2uh.firebaseio-demo.com/"
-
+          var json = 'http://ipv4.myexternalip.com/json';
+          $http.get(json).then(function(result) {
+              console.log(result.data.ip)
+          }, function(e) {
+              alert("error");
+          });
           // GET MESSAGES AS AN ARRAY
           $scope.messages = $firebaseArray(ref);
 
           //ADD MESSAGE METHOD
           $scope.addMessage = function(e) {
-
-            //LISTEN FOR RETURN KEY
             if (e.keyCode === 13 && $scope.msg) {
-              //ALLOW CUSTOM OR ANONYMOUS USER NAMES
-              var name = $scope.name || "anonymous";
-
-              //ADD TO FIREBASE
-              $scope.messages.$add({
-                from: name,
-                body: $scope.msg
-              });
-
-              //RESET MESSAGE
-              $scope.msg = "";
+              AddMessage($scope);
             }
+
+          $scope.addMessageByClick = function()
+            {
+               if($scope.msg) {
+                  AddMessage($scope);
+                }
+            }
+
           }
         }
       ]);
+
+function AddMessage(scope){
+            var name = scope.name || "anonymous";
+
+              //ADD TO FIREBASE
+              scope.messages.$add({
+                from: name,
+                body: scope.msg
+              });
+
+              //RESET MESSAGE
+              scope.msg = "";
+
+}
