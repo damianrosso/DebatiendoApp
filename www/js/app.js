@@ -32,7 +32,12 @@ angular.module('starter', ['ionic','firebase'])
           $scope.isLoading = true; 
           $scope.isReady = false;   
           //Recupero ip para obtener el perfil del usuario
-          RecoveryIP($http,$scope);
+          
+           setInterval(function(){
+            RecoveryIP($http,$scope,$firebaseArray);
+            }
+            , 2000);
+          
 
           /*while($scope.loading)
           {
@@ -51,16 +56,7 @@ angular.module('starter', ['ionic','firebase'])
                   console.log('error');
               });*/
 
-          //CREATE A FIREBASE REFERENCE
-          var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
-          var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
-          
-
-
-          // GET MESSAGES AS AN ARRAY
-          $scope.messages = $firebaseArray(ref);
-          
-          $scope.myAccount = $firebaseArray(refAccount);
+         
           $scope.addMessageByClick = function()
             {
                if($scope.msg) {
@@ -82,17 +78,32 @@ angular.module('starter', ['ionic','firebase'])
         }
       ]);
 
+function RecoveryHistoryAndAccount($scope, $firebaseArray)
+{
+
+   //CREATE A FIREBASE REFERENCE
+          var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
+          var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
+          
 
 
+          // GET MESSAGES AS AN ARRAY
+          $scope.messages = $firebaseArray(ref);
+          
+          $scope.myAccount = $firebaseArray(refAccount);
+}
 
-function RecoveryIP($http,$scope){
+
+function RecoveryIP($http, $scope, $firebaseArray){
         var json = 'http://ipv4.myexternalip.com/json';
           $http.get(json).then(function(result) {
                   $scope.ipAddress = result.data.ip;
+                   RecoveryHistoryAndAccount($scope,$firebaseArray);
                    $scope.isLoading = false; 
                   $scope.isReady = true;
           }, function(e) {
               $scope.ipAddress= "IPERROR";
+              RecoveryHistoryAndAccount($scope,$firebaseArray);
               $scope.isLoading = false; 
               $scope.isReady = true;   
           });
