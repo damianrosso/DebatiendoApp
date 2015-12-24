@@ -27,7 +27,7 @@
       <div class="bar bar-subheader has-header" style="display: flex !important;">
        <label class="item item-input">
        <i class="icon ion-person-stalker"></i>
-        <input type="text" style="padding-left: 5px;padding-top: 5px;" placeholder="Escribe tu apodo...">
+        <input type="text" ng-model="name" style="padding-left: 5px;padding-top: 5px;" placeholder="Escribe tu apodo...">
   </label>
       </div>
   <!--<ion-content >-->
@@ -51,14 +51,18 @@
         </div>
 
   <!--</ion-content>-->
+
 </div>
        
         <div class="bar bar-footer">
                     <div class="title"> 
-                        <label class="item item-input">
+                        <!--<label class="item item-input">-->
+                            <div class="item item-input">
                             <input ng-model="msg" ng-keydown="addMessage($event)" type="text" id="messageInput" placeholder="Escribe tu mensaje...">
-                            <button class="button button-clear ion-android-send button-right" ng-click="addMessageByClick();"></button>
-                        </label>
+                             <button class="button button-clear ion-android-send button-right" ng-click="addMessageByClick()"></button>
+                             </div>
+                        <!--</label>-->
+                       
                   </div>
                   
         </div>      

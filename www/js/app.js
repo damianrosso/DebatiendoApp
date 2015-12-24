@@ -23,27 +23,42 @@ angular.module('starter', ['ionic','firebase'])
   });
 })
 
+
+
 //Controller de acceso a FIREBASE
 .controller("MyController", ["$scope", "$firebaseArray","$http",
-        function($scope, $firebaseArray,$http) {
+        function($scope, $firebaseArray, $http) {
+          
+          $scope.loading = true;    
+          //Recupero ip para obtener el perfil del usuario
+          RecoveryIP($http,$scope);
+
+          /*while($scope.loading)
+          {
+            console.log('esperando response');
+
+          }*/
+          
+/*          var json = 'http://ipv4.myexternalip.com/json';
+          var promise =  $http.get(json);
+
+          promise.then(
+              function(payload) { 
+                  $scope.ipAddress = payload.data.ip;
+              },
+              function(errorPayload) {
+                  console.log('error');
+              });*/
+
           //CREATE A FIREBASE REFERENCE
-          var ref = new Firebase("https://shining-heat-9140.firebaseio.com/");
-            //https://p761udnm2uh.firebaseio-demo.com/"
-          var json = 'http://ipv4.myexternalip.com/json';
-          $http.get(json).then(function(result) {
-              console.log(result.data.ip)
-          }, function(e) {
-              alert("error");
-          });
+          var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
+          var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
+          
+
+
           // GET MESSAGES AS AN ARRAY
           $scope.messages = $firebaseArray(ref);
-
-          //ADD MESSAGE METHOD
-          $scope.addMessage = function(e) {
-            if (e.keyCode === 13 && $scope.msg) {
-              AddMessage($scope);
-            }
-
+          $scope.myAccount = $firebaseArray(refAccount);
           $scope.addMessageByClick = function()
             {
                if($scope.msg) {
@@ -51,9 +66,34 @@ angular.module('starter', ['ionic','firebase'])
                 }
             }
 
+
+
+          //ADD MESSAGE METHOD
+          $scope.addMessage = function(e) {
+            if (e.keyCode === 13 && $scope.msg) {
+              AddMessage($scope);
+            }
+
+          
+ 
           }
         }
       ]);
+
+
+
+
+function RecoveryIP($http,$scope){
+        var json = 'http://ipv4.myexternalip.com/json';
+          $http.get(json).then(function(result) {
+              $scope.ipAddress = result.data.ip;
+              $scope.loading = false;    
+          }, function(e) {
+              $scope.ipAddress= "IPERROR";
+              $scope.loading = false;    
+          });
+
+}
 
 function AddMessage(scope){
             var name = scope.name || "anonymous";
@@ -61,7 +101,8 @@ function AddMessage(scope){
               //ADD TO FIREBASE
               scope.messages.$add({
                 from: name,
-                body: scope.msg
+                body: scope.msg,
+                ipAddress: scope.ipAddress
               });
 
               //RESET MESSAGE
