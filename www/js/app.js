@@ -29,7 +29,8 @@ angular.module('starter', ['ionic','firebase'])
 .controller("MyController", ["$scope", "$firebaseArray","$http",
         function($scope, $firebaseArray, $http) {
           
-          $scope.loading = true;    
+          $scope.isLoading = true; 
+          $scope.isReady = false;   
           //Recupero ip para obtener el perfil del usuario
           RecoveryIP($http,$scope);
 
@@ -58,6 +59,7 @@ angular.module('starter', ['ionic','firebase'])
 
           // GET MESSAGES AS AN ARRAY
           $scope.messages = $firebaseArray(ref);
+          
           $scope.myAccount = $firebaseArray(refAccount);
           $scope.addMessageByClick = function()
             {
@@ -86,11 +88,13 @@ angular.module('starter', ['ionic','firebase'])
 function RecoveryIP($http,$scope){
         var json = 'http://ipv4.myexternalip.com/json';
           $http.get(json).then(function(result) {
-              $scope.ipAddress = result.data.ip;
-              $scope.loading = false;    
+                  $scope.ipAddress = result.data.ip;
+                   $scope.isLoading = false; 
+                  $scope.isReady = true;
           }, function(e) {
               $scope.ipAddress= "IPERROR";
-              $scope.loading = false;    
+              $scope.isLoading = false; 
+              $scope.isReady = true;   
           });
 
 }
