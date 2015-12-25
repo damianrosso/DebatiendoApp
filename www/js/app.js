@@ -23,10 +23,74 @@ angular.module('starter', ['ionic','firebase'])
   });
 })
 
+.config(function($stateProvider, $urlRouterProvider) {
 
+  // Ionic uses AngularUI Router which uses the concept of states
+  // Learn more here: https://github.com/angular-ui/ui-router
+  // Set up the various states which the app can be in.
+  // Each state's controller can be found in controllers.js
+  $stateProvider
+
+  // setup an abstract state for the tabs directive
+    .state('tab', {
+    url: '/tab',
+    abstract: true,
+    templateUrl: 'templates/tabs.html'
+  })
+
+  // Each tab has its own nav history stack:
+
+  .state('tab.chats', {
+    url: '/chats',
+    views: {
+      'tab-chats': {
+        templateUrl: 'templates/tab-chats.html',
+        controller: 'ChatsController'
+      }
+    }
+  })
+
+.state('tab.account', {
+    url: '/account',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/tab-account.html'
+       /* controller: 'AccountController'*/
+      }
+    }
+  })
+
+.state('tab.home', {
+    url: '/home',
+    views: {
+      'tab-home': {
+        templateUrl: 'templates/tab-home.html',
+        controller: 'HomeController'
+        }
+    }
+  })
+  ;
+
+  // if none of the above states are matched, use this as the fallback
+  $urlRouterProvider.otherwise('/tab/home');
+
+})
+
+.controller("HomeController",["$scope","$firebaseArray","$http",
+            function($scope, $firebaseArray, $http){
+                var ref = new Firebase("https://shining-heat-9140.firebaseio.com");
+                ref.authWithOAuthPopup("facebook", function(error, authData) {
+                  if (error) {
+                    console.log("Login Failed!", error);
+                  } else {
+                    console.log("Authenticated successfully with payload:", authData);
+                  }
+                });
+
+            }])
 
 //Controller de acceso a FIREBASE
-.controller("MyController", ["$scope", "$firebaseArray","$http",
+.controller("ChatsController", ["$scope", "$firebaseArray","$http",
         function($scope, $firebaseArray, $http) {
           
           $scope.isLoading = true; 
@@ -34,18 +98,23 @@ angular.module('starter', ['ionic','firebase'])
           //Recupero ip para obtener el perfil del usuario
           
            setInterval(function(){
-            RecoveryIP($http,$scope,$firebaseArray);
+                //RecoveryIP($http,$scope,$firebaseArray);
+                //RecoveryHistoryAndAccount($scope, $firebaseArray);
+                         //CREATE A FIREBASE REFERENCE
+          var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
+          var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
+          
+          // GET MESSAGES AS AN ARRAY
+          $scope.messages = $firebaseArray(ref);
+          $scope.myAccount = $firebaseArray(refAccount);
+          $scope.isLoading = false; 
+          $scope.isReady = true;
             }
             , 2000);
           
 
-          /*while($scope.loading)
-          {
-            console.log('esperando response');
-
-          }*/
           
-/*          var json = 'http://ipv4.myexternalip.com/json';
+/*        var json = 'http://ipv4.myexternalip.com/json';
           var promise =  $http.get(json);
 
           promise.then(
@@ -81,16 +150,15 @@ angular.module('starter', ['ionic','firebase'])
 function RecoveryHistoryAndAccount($scope, $firebaseArray)
 {
 
-   //CREATE A FIREBASE REFERENCE
+         //CREATE A FIREBASE REFERENCE
           var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
           var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
           
-
-
           // GET MESSAGES AS AN ARRAY
           $scope.messages = $firebaseArray(ref);
-          
           $scope.myAccount = $firebaseArray(refAccount);
+          $scope.isLoading = false; 
+          $scope.isReady = true;
 }
 
 
