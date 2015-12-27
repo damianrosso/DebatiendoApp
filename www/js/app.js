@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic','firebase'])
+angular.module('starter', ['ionic','firebase','ngStorage'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -76,17 +76,26 @@ angular.module('starter', ['ionic','firebase'])
 
 })
 
-.controller("HomeController",["$scope","$firebaseArray","$http",
-            function($scope, $firebaseArray, $http){
-                var ref = new Firebase("https://shining-heat-9140.firebaseio.com");
-                ref.authWithOAuthPopup("facebook", function(error, authData) {
-                  if (error) {
-                    console.log("Login Failed!", error);
-                  } else {
-                    console.log("Authenticated successfully with payload:", authData);
-                  }
-                });
-
+.controller("HomeController",["$scope","$firebaseArray","$http","$localStorage",
+            function($scope, $firebaseArray, $http,$localStorage){
+              var accountStatus = JSON.parse(window.localStorage['accountStatus'] || '{}');
+              $scope.IsLogged = false;
+              if(accountStatus.token == undefined){
+                    var ref = new Firebase("https://shining-heat-9140.firebaseio.com");
+                    ref.authWithOAuthPopup("facebook", function(error, authData) {
+                      if (error) {
+                        console.log("Login Failed!", error);
+                      } else {
+                        console.log("Authenticated successfully with payload:", authData);
+                       window.localStorage['accountStatus'] = JSON.stringify(authData);
+                      }
+                    });
+              }
+              else
+              {
+                  $scope.IsLogged = true;
+                  $scope.accountLogged  = accountStatus;
+              }
             }])
 
 //Controller de acceso a FIREBASE
@@ -184,8 +193,8 @@ function AddMessage(scope){
               //ADD TO FIREBASE
               scope.messages.$add({
                 from: name,
-                body: scope.msg,
-                ipAddress: scope.ipAddress
+                body: scope.msg
+                //ipAddress: scope.ipAddress
               });
 
               //RESET MESSAGE

@@ -16,11 +16,24 @@ display: flex;
   flex-direction: column;
   justify-content: center;
           -->
-					    <div style="">                  
-    						<button class="button button-block icon-left ion-social-facebook button-positive">
-  								Login Facebook
-  						   </button>
-  						</div>
+					    
+                <div ng-show="!(IsLogged)">
+                    <button class="button button-block icon-left ion-social-facebook button-positive">
+      								Login Facebook
+      						   </button>
+                </div>
+                <div ng-show="IsLogged" style="text-align: center;">
+                  <div class="card" style="border-radius: 8%;">
+                      <div class="item item-text-wrap">
+                            <h1>Bienvenido:</h1>
+                            <p class="padding-bottom"><h2 class="padding-bottom">{{accountLogged.facebook.displayName}}</h2></p>
+                            <img style="    border-radius: 50%;"  src="{{accountLogged.facebook.profileImageURL}}">
+                      </div>
+                  </div>
+                  
+                  <a class="button button-block icon-left ion-person-stalker ion-dark icon-dark button-energized" style="color: #000 !important;" href="#/tab/chats">DEBATE POLITICO</a>
+                  <a class="button button-block icon-left ion-chatbubbles ion-dark icon-dark button-balanced" style="color: #000 !important;" href="#/tab/chats">MIS CONVERSACIONES</a>
+              </div>
         </ion-content>
         </div>
         </ion-pane>
