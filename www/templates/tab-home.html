@@ -4,6 +4,7 @@
       <ion-header-bar class="bar bar-header bar-positive">
         <button class="button icon ion-home"></button>
         <h2 class="title">DEBATIENDO APP</h2>
+        <a class="button icon ion-gear-b"></a>
       </ion-header-bar>
      
      <div>
@@ -18,7 +19,7 @@ display: flex;
           -->
 					    
                 <div ng-show="!(IsLogged)">
-                    <button class="button button-block icon-left ion-social-facebook button-positive">
+                    <button class="button button-block icon-left ion-social-facebook button-positive" ng-click="Login()">
       								Login Facebook
       						   </button>
                 </div>

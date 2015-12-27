@@ -81,21 +81,35 @@ angular.module('starter', ['ionic','firebase','ngStorage'])
               var accountStatus = JSON.parse(window.localStorage['accountStatus'] || '{}');
               $scope.IsLogged = false;
               if(accountStatus.token == undefined){
-                    var ref = new Firebase("https://shining-heat-9140.firebaseio.com");
-                    ref.authWithOAuthPopup("facebook", function(error, authData) {
-                      if (error) {
-                        console.log("Login Failed!", error);
-                      } else {
-                        console.log("Authenticated successfully with payload:", authData);
-                       window.localStorage['accountStatus'] = JSON.stringify(authData);
-                      }
-                    });
+                    $scope.Login = function(){
+                          var ref = new Firebase("https://shining-heat-9140.firebaseio.com");
+                          ref.authWithOAuthPopup("facebook", function(error, authData) {
+                            if (error) {
+                              console.log("Login Failed!", error);
+                              alert("Login Failed!" + error);
+                              $scope.IsLogged = false;
+                            } else {
+                              console.log("Authenticated successfully with payload:", authData);
+                              window.localStorage['accountStatus'] = JSON.stringify(authData);
+                               setTimeout(function () {
+                                      $scope.$apply(function () {
+                                          $scope.IsLogged = true;
+                                          $scope.accountLogged  = authData;
+                                          CreateAccountOrRecovery($scope,$firebaseArray,authData.facebook.id);
+                                      });
+                                  }, 1000);
+                              
+                            }
+                          });  
+                    };
+                    
               }
               else
               {
                   $scope.IsLogged = true;
                   $scope.accountLogged  = accountStatus;
               }
+
             }])
 
 //Controller de acceso a FIREBASE
@@ -161,11 +175,11 @@ function RecoveryHistoryAndAccount($scope, $firebaseArray)
 
          //CREATE A FIREBASE REFERENCE
           var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
-          var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
+    //      var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
           
           // GET MESSAGES AS AN ARRAY
           $scope.messages = $firebaseArray(ref);
-          $scope.myAccount = $firebaseArray(refAccount);
+      //    $scope.myAccount = $firebaseArray(refAccount);
           $scope.isLoading = false; 
           $scope.isReady = true;
 }
@@ -200,4 +214,26 @@ function AddMessage(scope){
               //RESET MESSAGE
               scope.msg = "";
 
+}
+
+function CreateAccountOrRecovery($scope,$firebaseArray,id){
+    var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/"+id);
+    var recoveryAccount = $firebaseArray(refAccount);
+    if(recoveryAccount.length == 0)
+      {
+        //var refProfileNew = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil");
+        var estructure ={
+           
+                              "fontColor" : "yellow",
+                              "image" : "undefined",
+                              "ipAddress" : "200.117.81.204",
+                              "userName" : "DamianRosso"
+        };
+
+        recoveryAccount.$add(estructure);
+      }
+    else
+      {
+        $scope.myAccount = recoveryAccount;
+      }
 }
