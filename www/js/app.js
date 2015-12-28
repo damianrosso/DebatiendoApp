@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic','firebase','ngStorage'])
+angular.module('starter', ['ionic','firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -76,8 +76,8 @@ angular.module('starter', ['ionic','firebase','ngStorage'])
 
 })
 
-.controller("HomeController",["$scope","$firebaseArray","$http","$localStorage",
-            function($scope, $firebaseArray, $http,$localStorage){
+.controller("HomeController",["$scope","$firebaseArray","$http",
+            function($scope, $firebaseArray, $http){
               var accountStatus = JSON.parse(window.localStorage['accountStatus'] || '{}');
               $scope.IsLogged = false;
               if(accountStatus.token == undefined){
@@ -222,15 +222,18 @@ function CreateAccountOrRecovery($scope,$firebaseArray,id){
     if(recoveryAccount.length == 0)
       {
         //var refProfileNew = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil");
+        //recoveryAccount = $firebaseArray(refProfileNew);
         var estructure ={
-           
-                              "fontColor" : "yellow",
-                              "image" : "undefined",
-                              "ipAddress" : "200.117.81.204",
-                              "userName" : "DamianRosso"
-        };
+                          "200-117-81-204" : {
+                            "fontColor" : "yellow",
+                            "image" : "undefined",
+                            "ipAddress" : "200.117.81.204",
+                            "userName" : "DamianRosso"
+                          }
+                        };
 
-        recoveryAccount.$add(estructure);
+
+        recoveryAccount.$add(JSON.stringify(estructure));
       }
     else
       {
