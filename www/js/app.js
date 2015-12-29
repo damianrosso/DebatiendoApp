@@ -76,8 +76,8 @@ angular.module('starter', ['ionic','firebase'])
 
 })
 
-.controller("HomeController",["$scope","$firebaseArray","$http",
-            function($scope, $firebaseArray, $http){
+.controller("HomeController",["$scope","$firebaseArray","$http","$firebaseObject",
+            function($scope, $firebaseArray, $http,$firebaseObject){
               var accountStatus = JSON.parse(window.localStorage['accountStatus'] || '{}');
               $scope.IsLogged = false;
               if(accountStatus.token == undefined){
@@ -95,7 +95,7 @@ angular.module('starter', ['ionic','firebase'])
                                       $scope.$apply(function () {
                                           $scope.IsLogged = true;
                                           $scope.accountLogged  = authData;
-                                          CreateAccountOrRecovery($scope,$firebaseArray,authData.facebook.id);
+                                          CreateAccountOrRecovery($scope,$firebaseArray,authData.facebook.id,$firebaseObject);
                                       });
                                   }, 1000);
                               
@@ -120,10 +120,8 @@ angular.module('starter', ['ionic','firebase'])
           $scope.isReady = false;   
           //Recupero ip para obtener el perfil del usuario
           
-           setInterval(function(){
-                //RecoveryIP($http,$scope,$firebaseArray);
-                //RecoveryHistoryAndAccount($scope, $firebaseArray);
-                         //CREATE A FIREBASE REFERENCE
+          // setInterval(function(){
+           //CREATE A FIREBASE REFERENCE
           var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
           var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
           
@@ -132,22 +130,8 @@ angular.module('starter', ['ionic','firebase'])
           $scope.myAccount = $firebaseArray(refAccount);
           $scope.isLoading = false; 
           $scope.isReady = true;
-            }
-            , 2000);
-          
-
-          
-/*        var json = 'http://ipv4.myexternalip.com/json';
-          var promise =  $http.get(json);
-
-          promise.then(
-              function(payload) { 
-                  $scope.ipAddress = payload.data.ip;
-              },
-              function(errorPayload) {
-                  console.log('error');
-              });*/
-
+          //  }
+          //  , 2000);
          
           $scope.addMessageByClick = function()
             {
@@ -175,11 +159,8 @@ function RecoveryHistoryAndAccount($scope, $firebaseArray)
 
          //CREATE A FIREBASE REFERENCE
           var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
-    //      var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
-          
           // GET MESSAGES AS AN ARRAY
           $scope.messages = $firebaseArray(ref);
-      //    $scope.myAccount = $firebaseArray(refAccount);
           $scope.isLoading = false; 
           $scope.isReady = true;
 }
@@ -216,27 +197,37 @@ function AddMessage(scope){
 
 }
 
-function CreateAccountOrRecovery($scope,$firebaseArray,id){
+function CreateAccountOrRecovery($scope,$firebaseArray,id,$firebaseObject){
     var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/"+id);
-    var recoveryAccount = $firebaseArray(refAccount);
-    if(recoveryAccount.length == 0)
+    var recoveryAccount = $firebaseObject(refAccount);//$firebaseArray(refAccount);
+    recoveryAccount.$loaded().then(function() {
+      if(recoveryAccount.userName == undefined || recoveryAccount.userName == "")
       {
-        //var refProfileNew = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil");
-        //recoveryAccount = $firebaseArray(refProfileNew);
-        var estructure ={
-                          "200-117-81-204" : {
-                            "fontColor" : "yellow",
-                            "image" : "undefined",
-                            "ipAddress" : "200.117.81.204",
-                            "userName" : "DamianRosso"
-                          }
-                        };
+        var refProfileNew = new Firebase("https://shining-heat-9140.firebaseio.com");
+        var estructure = { [id]: 
+                        {"userName": $scope.accountLogged.facebook.displayName,
+                         "fontColor": "dark",
+                         "profileImg": $scope.accountLogged.facebook.profileImageURL}};
+        refProfileNew.child("Perfil").set(estructure);
 
-
-        recoveryAccount.$add(JSON.stringify(estructure));
       }
     else
       {
         $scope.myAccount = recoveryAccount;
       }
+    });
+    /*if(recoveryAccount.length == 0)
+      {
+        var refProfileNew = new Firebase("https://shining-heat-9140.firebaseio.com");
+        var estructure = { [id]: 
+                        {userName: $scope.accountLogged.facebook.displayName,
+                         fontColor: "dark",
+                         profileImg: $scope.accountLogged.facebook.profileImageURL}};
+        refProfileNew.child("Perfil").set(estructure);
+
+      }
+    else
+      {
+        $scope.myAccount = recoveryAccount;
+      }*/
 }
