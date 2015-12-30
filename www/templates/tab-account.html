@@ -1,11 +1,67 @@
-<div class="list">
-  <label class="item item-input">
-    <input type="text" placeholder="First Name">
-  </label>
-  <label class="item item-input">
-    <input type="text" placeholder="Last Name">
-  </label>
-  <label class="item item-input">
-    <textarea placeholder="Comments"></textarea>
-  </label>
-</div>
+<ion-view view-title="Account">
+    <ion-pane style="background-image: url(img/DebatiendoBackGround.jpg)">
+   
+      <ion-header-bar class="bar bar-header bar-positive">
+         <a class="button icon ion-home" href="#/tab/home"></a>
+        <h2 class="title">DEBATIENDO APP</h2>
+        <a class="button icon ion-gear-b" href="#/tab/account"  ng-show="IsLogged"></a>
+      </ion-header-bar>
+     
+     <div>
+        <ion-content class="content has-header padding">
+	        <div class="item item-divider">Perfil:</div>
+        	<div class="list">
+			  <label class="item item-input item-stacked-label">
+			    <span class="input-label" style="color: white;">Nombre de Usuario</span>
+			    <input type="text" placeholder="John" style="background-color: transparent;font-family: cursive;">
+			  </label>
+			  <label class="item item-input item-stacked-label">
+			    <span class="input-label" style="color: white;">Color de texto</span>
+			    <div style="display:block; padding-left: 0px;" class="padding">
+			    	<button class="button">
+					</button>
+					<button class="button button-light">
+					</button>
+					<button class="button button-stable">
+					</button>
+					<button class="button button-positive">
+					</button>
+					<button class="button button-calm">
+					</button>
+				</div>
+				<div style="display:block; padding-left: 0px;" class="padding">
+					<button class="button button-balanced">
+					</button>
+					<button class="button button-energized">
+					</button>
+					<button class="button button-assertive">
+					</button>
+					<button class="button button-royal">
+					</button>
+					<button class="button button-dark">
+					</button>
+				</div>
+			  </label>
+			  <label class="item item-input item-stacked-label">
+			    <span class="input-label" style="color: white;">Imagen de Fondo:</span>
+			    <!--<input type="text" placeholder="john@suhr.com" style="background-color: transparent;font-family: cursive;">-->
+			  </label>
+			</div>
+			<div class="padding">
+			<div id="search-bar"  ng-controller="FlickrCtrl">
+    <div class="item item-input-inset">
+      <label class="item-input-wrapper" id="search-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="text" placeholder="Search" ng-model="query" ng-change="search()">
+      </label>
+    </div>
+      <div class="photo" ng-repeat="photo in photos.items">
+        <img ng-src="{{ photo.media.m }}">
+      </div>
+  </div>
+		        <button class="button button-block button-positive">Actualizar datos</button>
+		    </div>
+        </ion-content>
+     </div>
+     </ion-pane>
+</ion-view>

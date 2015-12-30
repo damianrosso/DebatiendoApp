@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic','firebase'])
+angular.module('starter', ['ionic','firebase','ngResource'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -75,6 +75,43 @@ angular.module('starter', ['ionic','firebase'])
   $urlRouterProvider.otherwise('/tab/home');
 
 })
+
+
+.factory('Flickr', function($resource, $q) {
+  var photosPublic = $resource('http://api.flickr.com/services/feeds/photos_public.gne', 
+      { format: 'json', jsoncallback: 'JSON_CALLBACK' }, 
+      { 'load': { 'method': 'JSONP' } });
+      
+  return {
+    search: function(query) {
+      var q = $q.defer();
+      photosPublic.load({
+        tags: query
+      }, function(resp) {
+        q.resolve(resp);
+      }, function(err) {
+        q.reject(err);
+      })
+      
+      return q.promise;
+    }
+  }
+})
+
+.controller('FlickrCtrl', function($scope, Flickr) {
+
+  var doSearch = ionic.debounce(function(query) {
+    Flickr.search(query).then(function(resp) {
+      $scope.photos = resp;
+    });
+  }, 500);
+  
+  $scope.search = function() {
+    doSearch($scope.query);
+  }
+
+})
+
 
 .controller("HomeController",["$scope","$firebaseArray","$http","$firebaseObject",
             function($scope, $firebaseArray, $http,$firebaseObject){
@@ -216,18 +253,4 @@ function CreateAccountOrRecovery($scope,$firebaseArray,id,$firebaseObject){
         $scope.myAccount = recoveryAccount;
       }
     });
-    /*if(recoveryAccount.length == 0)
-      {
-        var refProfileNew = new Firebase("https://shining-heat-9140.firebaseio.com");
-        var estructure = { [id]: 
-                        {userName: $scope.accountLogged.facebook.displayName,
-                         fontColor: "dark",
-                         profileImg: $scope.accountLogged.facebook.profileImageURL}};
-        refProfileNew.child("Perfil").set(estructure);
-
-      }
-    else
-      {
-        $scope.myAccount = recoveryAccount;
-      }*/
 }

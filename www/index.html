@@ -7,10 +7,10 @@
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
-    <link href="https://sandbox-tutorial.firebaseapp.com/resources/css/example.css" rel="stylesheet">
+<!--    <link href="https://sandbox-tutorial.firebaseapp.com/resources/css/example.css" rel="stylesheet">-->
 
     <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <script src="lib/ngstorage/ngStorage.min.js"></script>
+      <script src="//code.ionicframework.com/nightly/js/angular/angular-resource.js"></script>
     <script src="cordova.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.2.1/firebase.js"></script>
     <script src="https://cdn.firebase.com/libs/angularfire/1.0.0/angularfire.min.js"></script>
@@ -27,6 +27,46 @@
   
   display: none !important;
 }
+
+/*#search-input {
+  text-align: center;
+}*/
+
+/*#photos {
+  margin: auto;
+}*/
+
+.photo {
+  width: 100px;
+  height: 100px;
+  margin: 1px;
+  float: left;
+  overflow: hidden;
+}
+.photo img {
+  min-width: 100%;
+  min-height: 100%;
+  max-width: 150%;
+  max-height: 150%;
+}
+
+/*#search-bar {
+  background: none;
+  position: absolute;
+  width: 100%;
+  top: 44px;
+  height: 40px;
+  z-index: 3;
+}
+#search-bar .item {
+  background: none;
+  border: none;
+}
+#content {
+  top: 44px;
+  padding-top: 45px;
+  padding-bottom: 20px;
+}*/
     </style>
   </head>
   <body>
