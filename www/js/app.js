@@ -3,7 +3,7 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic','firebase','ngResource'])
+angular.module('starter', ['ionic','firebase'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -54,8 +54,8 @@ angular.module('starter', ['ionic','firebase','ngResource'])
     url: '/account',
     views: {
       'tab-account': {
-        templateUrl: 'templates/tab-account.html'
-       /* controller: 'AccountController'*/
+        templateUrl: 'templates/tab-account.html',
+        controller: 'AccountController'
       }
     }
   })
@@ -77,47 +77,11 @@ angular.module('starter', ['ionic','firebase','ngResource'])
 })
 
 
-.factory('Flickr', function($resource, $q) {
-  var photosPublic = $resource('http://api.flickr.com/services/feeds/photos_public.gne', 
-      { format: 'json', jsoncallback: 'JSON_CALLBACK' }, 
-      { 'load': { 'method': 'JSONP' } });
-      
-  return {
-    search: function(query) {
-      var q = $q.defer();
-      photosPublic.load({
-        tags: query
-      }, function(resp) {
-        q.resolve(resp);
-      }, function(err) {
-        q.reject(err);
-      })
-      
-      return q.promise;
-    }
-  }
-})
-
-.controller('FlickrCtrl', function($scope, Flickr) {
-
-  var doSearch = ionic.debounce(function(query) {
-    Flickr.search(query).then(function(resp) {
-      $scope.photos = resp;
-    });
-  }, 500);
-  
-  $scope.search = function() {
-    doSearch($scope.query);
-  }
-
-})
-
-
 .controller("HomeController",["$scope","$firebaseArray","$http","$firebaseObject",
             function($scope, $firebaseArray, $http,$firebaseObject){
               var accountStatus = JSON.parse(window.localStorage['accountStatus'] || '{}');
               $scope.IsLogged = false;
-              if(accountStatus.token == undefined){
+              if(accountStatus.userName == undefined || accountStatus == ""){
                     $scope.Login = function(){
                           var ref = new Firebase("https://shining-heat-9140.firebaseio.com");
                           ref.authWithOAuthPopup("facebook", function(error, authData) {
@@ -127,7 +91,7 @@ angular.module('starter', ['ionic','firebase','ngResource'])
                               $scope.IsLogged = false;
                             } else {
                               console.log("Authenticated successfully with payload:", authData);
-                              window.localStorage['accountStatus'] = JSON.stringify(authData);
+                              //window.localStorage['accountStatus'] = JSON.stringify(authData);
                                setTimeout(function () {
                                       $scope.$apply(function () {
                                           $scope.IsLogged = true;
@@ -144,7 +108,7 @@ angular.module('starter', ['ionic','firebase','ngResource'])
               else
               {
                   $scope.IsLogged = true;
-                  $scope.accountLogged  = accountStatus;
+                  $scope.accountModel  = accountStatus;
               }
 
             }])
@@ -160,11 +124,11 @@ angular.module('starter', ['ionic','firebase','ngResource'])
           // setInterval(function(){
            //CREATE A FIREBASE REFERENCE
           var ref = new Firebase("https://shining-heat-9140.firebaseio.com/ChatMessage");
-          var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
+          //var refAccount = new Firebase("https://shining-heat-9140.firebaseio.com/Perfil/200-117-81-204");
           
           // GET MESSAGES AS AN ARRAY
           $scope.messages = $firebaseArray(ref);
-          $scope.myAccount = $firebaseArray(refAccount);
+          //$scope.myAccount = $firebaseArray(refAccount);
           $scope.isLoading = false; 
           $scope.isReady = true;
           //  }
@@ -177,19 +141,23 @@ angular.module('starter', ['ionic','firebase','ngResource'])
                 }
             }
 
-
-
           //ADD MESSAGE METHOD
           $scope.addMessage = function(e) {
             if (e.keyCode === 13 && $scope.msg) {
               AddMessage($scope);
             }
-
-          
- 
           }
         }
-      ]);
+      ])
+
+.controller("AccountController", ["$scope", "$firebaseArray","$http",
+        function($scope, $firebaseArray, $http) {
+            $http.get('img/WallPapers/data.json').success(function(data){
+              $scope.images = data;
+          }).error(function(a,b){
+            console.log(a);
+          });
+}]);
 
 function RecoveryHistoryAndAccount($scope, $firebaseArray)
 {
@@ -246,11 +214,29 @@ function CreateAccountOrRecovery($scope,$firebaseArray,id,$firebaseObject){
                          "fontColor": "dark",
                          "profileImg": $scope.accountLogged.facebook.profileImageURL}};
         refProfileNew.child("Perfil").set(estructure);
-
+        window.localStorage['accountStatus'] = JSON.stringify(estructure);
+        $scope.accountLogged  = estructure;
       }
     else
       {
-        $scope.myAccount = recoveryAccount;
+        var accountModel = {
+            userName:recoveryAccount.userName,
+            profileImg: recoveryAccount.profileImg
+        }
+        if($scope.accountLogged.facebook.profileImageURL == recoveryAccount.profileImg)
+          {
+            //$scope.myAccount = recoveryAccount;
+            window.localStorage['accountStatus'] = JSON.stringify(accountModel);
+            $scope.accountModel  = accountModel;
+          }
+          else
+          {
+            recoveryAccount.profileImg= $scope.accountLogged.facebook.profileImageURL;
+            recoveryAccount.$save();
+            accountModel.profileImg = $scope.accountLogged.facebook.profileImageURL; 
+            window.localStorage['accountStatus'] = JSON.stringify(accountModel);
+            $scope.accountModel  = accountModel;
+          }
       }
     });
 }

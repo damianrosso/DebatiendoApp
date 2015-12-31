@@ -13,7 +13,7 @@
         	<div class="list">
 			  <label class="item item-input item-stacked-label">
 			    <span class="input-label" style="color: white;">Nombre de Usuario</span>
-			    <input type="text" placeholder="John" style="background-color: transparent;font-family: cursive;">
+			    <input type="text" style="background-color: transparent;font-family: cursive;" value="{{accountModel.userName}}">
 			  </label>
 			  <label class="item item-input item-stacked-label">
 			    <span class="input-label" style="color: white;">Color de texto</span>
@@ -44,21 +44,16 @@
 			  </label>
 			  <label class="item item-input item-stacked-label">
 			    <span class="input-label" style="color: white;">Imagen de Fondo:</span>
-			    <!--<input type="text" placeholder="john@suhr.com" style="background-color: transparent;font-family: cursive;">-->
+			     <div style="display:block; padding-left: 0px;" class="padding">
+					<ion-scroll zooming="true" direction="x" >
+			     	<img class="" src="{{img.root}}" ng-repeat="img in images" style="width:204px;height:128px;"/>
+			     	</ion-scroll>
+			     </div>
+			     <div style="display:block; padding-left: 0px;" class="padding">
+			     </div>
 			  </label>
 			</div>
 			<div class="padding">
-			<div id="search-bar"  ng-controller="FlickrCtrl">
-    <div class="item item-input-inset">
-      <label class="item-input-wrapper" id="search-input">
-        <i class="icon ion-search placeholder-icon"></i>
-        <input type="text" placeholder="Search" ng-model="query" ng-change="search()">
-      </label>
-    </div>
-      <div class="photo" ng-repeat="photo in photos.items">
-        <img ng-src="{{ photo.media.m }}">
-      </div>
-  </div>
 		        <button class="button button-block button-positive">Actualizar datos</button>
 		    </div>
         </ion-content>
